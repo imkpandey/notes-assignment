@@ -17,13 +17,19 @@ const FormCanvas = () => {
   const { notes, editNote, deleteNote } = useContext(NoteContext);
 
   const handleTitleChange = (noteId, event) => {
-    const updatedTitle = event.target.value;
-    editNote(noteId, { title: updatedTitle });
+    const updatedNote = {
+      title: event.target.value,
+      updated: new Date().toLocaleString(),
+    };
+    editNote(noteId, updatedNote);
   };
 
   const handleDescriptionChange = (noteId, event) => {
-    const updatedDescription = event.target.value;
-    editNote(noteId, { description: updatedDescription });
+    const updatedNote = {
+      description: event.target.value,
+      updated: new Date().toLocaleString(),
+    };
+    editNote(noteId, updatedNote);
   };
 
   const handleDeleteNote = (noteId) => {
@@ -89,7 +95,11 @@ const FormCanvas = () => {
                   />
                 </Box>
                 <Box display="flex" justifyContent="space-between">
-                  <Box display="flex" flexDirection="column" marginTop={note.updated ? 2 : 1.5}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    marginTop={note.updated ? 2 : 1.5}
+                  >
                     <Typography variant="caption" color="text.secondary">
                       Created: {note.created}
                     </Typography>
@@ -99,7 +109,10 @@ const FormCanvas = () => {
                       </Typography>
                     )}
                   </Box>
-                  <IconButton onClick={() => handleDeleteNote(note.id)} sx={{ marginTop: note.updated ? 2 : null}}>
+                  <IconButton
+                    onClick={() => handleDeleteNote(note.id)}
+                    sx={{ marginTop: note.updated ? 2 : null }}
+                  >
                     <DeleteOutline />
                   </IconButton>
                 </Box>
