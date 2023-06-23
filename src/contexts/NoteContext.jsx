@@ -36,6 +36,12 @@ const NoteProvider = ({ children }) => {
     );
   };
 
+  const filterNotes = () => {
+    return notes.filter((note) =>
+      note.title.toLowerCase().includes(searchNote.toLowerCase())
+    );
+  };
+
   const deleteNote = (noteId) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
   };
@@ -43,7 +49,7 @@ const NoteProvider = ({ children }) => {
   return (
     <NoteContext.Provider
       value={{
-        notes,
+        notes: filterNotes(),
         searchNote,
         addNote,
         editNote,

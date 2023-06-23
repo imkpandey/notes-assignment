@@ -3,8 +3,10 @@ import { Box, Divider, Typography, TextField, InputBase } from "@mui/material";
 import { NoteContext } from "../contexts/NoteContext";
 
 const Topbar = () => {
-  const { searchNote, setSearchNote } = useContext(NoteContext);
-
+  const { setSearchNote } = useContext(NoteContext);
+  const handleSearchChange = (event) => {
+    setSearchNote(event.target.value);
+  };
   return (
     <Box>
       <Box display="flex" alignItems="center" my={2} marginLeft={10}>
@@ -13,8 +15,7 @@ const Topbar = () => {
             id="search"
             label="Search"
             size="small"
-            value={searchNote}
-            onChange={(e) => setSearchNote(e.target.value)}
+            onChange={handleSearchChange}
           />
         </Box>
       </Box>

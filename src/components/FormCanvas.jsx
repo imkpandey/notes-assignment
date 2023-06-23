@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
   Grid,
   Input,
@@ -9,24 +9,33 @@ import {
   IconButton,
 } from "@mui/material";
 import { NoteContext } from "../contexts/NoteContext";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, ExpandMore } from "@mui/icons-material";
 import InstructionIcon from "../assets/instruction.svg";
+import NoteModal from "./NoteModal";
 
 const FormCanvas = () => {
   const { notes, editNote, deleteNote } = useContext(NoteContext);
 
   const handleTitleChange = (noteId, event) => {
-    const updatedNote = { title: event.target.value };
-    editNote(noteId, updatedNote);
+    const updatedTitle = event.target.value;
+    editNote(noteId, { title: updatedTitle });
   };
 
   const handleDescriptionChange = (noteId, event) => {
-    const updatedNote = { description: event.target.value };
-    editNote(noteId, updatedNote);
+    const updatedDescription = event.target.value;
+    editNote(noteId, { description: updatedDescription });
   };
 
   const handleDeleteNote = (noteId) => {
     deleteNote(noteId);
+  };
+
+  const handleExpandNote = (note) => {
+    editNote(note.id, { ...note, expanded: true });
+  };
+
+  const handleCloseModal = (note) => {
+    editNote(note.id, { ...note, expanded: false });
   };
 
   return (
@@ -49,13 +58,22 @@ const FormCanvas = () => {
                 }}
               >
                 <Box>
-                  <Input
-                    type="text"
-                    value={note.title}
-                    onChange={(event) => handleTitleChange(note.id, event)}
-                    placeholder="Add title"
-                    sx={{ fontWeight: "bold", marginBottom: "8px" }}
-                  />
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Input
+                      type="text"
+                      value={note.title}
+                      onChange={(event) => handleTitleChange(note.id, event)}
+                      placeholder="Add title"
+                      sx={{ fontWeight: "bold", marginBottom: "8px" }}
+                    />
+                    <IconButton onClick={() => handleExpandNote(note)}>
+                      <ExpandMore />
+                    </IconButton>
+                  </Box>
                   <InputBase
                     multiline
                     value={note.description}
@@ -65,22 +83,34 @@ const FormCanvas = () => {
                     placeholder="Write something here..."
                     sx={{
                       width: "100%",
+                      overflow: "hidden",
+                      maxHeight: note.expanded ? "none" : "100px",
                     }}
                   />
                 </Box>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="caption" color="text.secondary">
-                    Created: {note.created}
-                  </Typography>
-                  <IconButton onClick={() => handleDeleteNote(note.id)}>
+                <Box display="flex" justifyContent="space-between">
+                  <Box display="flex" flexDirection="column" marginTop={note.updated ? 2 : 1.5}>
+                    <Typography variant="caption" color="text.secondary">
+                      Created: {note.created}
+                    </Typography>
+                    {note.updated && (
+                      <Typography variant="caption" color="text.secondary">
+                        Updated: {note.updated}
+                      </Typography>
+                    )}
+                  </Box>
+                  <IconButton onClick={() => handleDeleteNote(note.id)} sx={{ marginTop: note.updated ? 2 : null}}>
                     <DeleteOutline />
                   </IconButton>
                 </Box>
               </Paper>
+              {note.expanded && (
+                <NoteModal
+                  note={note}
+                  editNote={editNote}
+                  onClose={() => handleCloseModal(note)}
+                />
+              )}
             </Grid>
           ))}
         </Grid>
